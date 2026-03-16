@@ -19,16 +19,30 @@ class myShazamViewController: UIViewController, SHSessionDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         session.delegate = self
-        startListening()
 
     }
     @IBAction func doSomething(_ sender: Any) {
-        let signature = signatureGenerator.signature()
-        session.match(signature)
+        startListening()
+        print("listening for 10 sec")
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10){
+            
+            self.audioEngine.stop()
+            self.audioEngine.inputNode.removeTap(onBus: 0)
+            
+            let signature = self.signatureGenerator.signature()
+            self.session.match(signature)
+            print("finished listening matching song")
+        }
     }
     func startListening(){
-        let inputNode = audioEngine.inputNode
-        let format = inputNode.outputFormat(forBus: 0)
+        do{
+            let audiSession = AVAudioSession.sharedInstance()
+            try audiSession.setCategory(.record, mode: .default)
+            try audiSession.setActive(true)
+            
+            let inputNode = audioEngine.inputNode
+            let format = inputNode.inputFormat(forBus: 0)
         
         inputNode.installTap(onBus: 0, bufferSize: 1024, format: format){ buffer, audioTime in
             do{
@@ -37,11 +51,10 @@ class myShazamViewController: UIViewController, SHSessionDelegate {
                 print("failed to append to audioBuffer\(error)")
             }
         }
-        do {
-            try AVAudioSession.sharedInstance().setCategory(.record,mode: .default)
-            try AVAudioSession.sharedInstance().setActive(true)
+            
+            audioEngine.prepare()
             try audioEngine.start()
-            print("listening...")
+            print("listening")
         }catch {
             print( "audio engine coudnt start \(error)")
         }
