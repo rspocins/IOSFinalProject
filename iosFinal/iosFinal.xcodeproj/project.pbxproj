@@ -9,12 +9,14 @@
 /* Begin PBXBuildFile section */
 		9C5383552F67AD4C00B9FA95 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C5383542F67AD4C00B9FA95 /* SignInViewController.swift */; };
 		9C5383572F67B20E00B9FA95 /* RegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C5383562F67B20E00B9FA95 /* RegistrationViewController.swift */; };
+		9C89490F2F686D7B006893DC /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9C89490D2F686D7B006893DC /* Model.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		9C5383162F6777EC00B9FA95 /* iosFinal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosFinal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C5383542F67AD4C00B9FA95 /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		9C5383562F67B20E00B9FA95 /* RegistrationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewController.swift; sourceTree = "<group>"; };
+		9C89490E2F686D7B006893DC /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -53,6 +55,7 @@
 			isa = PBXGroup;
 			children = (
 				9C5383562F67B20E00B9FA95 /* RegistrationViewController.swift */,
+				9C89490D2F686D7B006893DC /* Model.xcdatamodeld */,
 				9C5383542F67AD4C00B9FA95 /* SignInViewController.swift */,
 				9C5383182F6777EC00B9FA95 /* iosFinal */,
 				9C5383172F6777EC00B9FA95 /* Products */,
@@ -142,6 +145,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9C5383572F67B20E00B9FA95 /* RegistrationViewController.swift in Sources */,
+				9C89490F2F686D7B006893DC /* Model.xcdatamodeld in Sources */,
 				9C5383552F67AD4C00B9FA95 /* SignInViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -360,6 +364,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		9C89490D2F686D7B006893DC /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				9C89490E2F686D7B006893DC /* Model.xcdatamodel */,
+			);
+			currentVersion = 9C89490E2F686D7B006893DC /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 9C53830E2F6777EC00B9FA95 /* Project object */;
 }

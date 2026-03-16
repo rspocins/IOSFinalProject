@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import CoreData
 var usersDict = ["user": "pass"]
 
 class RegistrationViewController: UIViewController {
@@ -21,19 +21,34 @@ class RegistrationViewController: UIViewController {
     }
     
     @IBAction func RegisterButton(_ sender: Any) {
-        if let uname = RegUserName.text,
-           let pass = Regpass.text {
-            if uname.isEmpty || pass.isEmpty{
+        guard let uname = RegUserName.text,
+           let pass = Regpass.text,
+              !uname.isEmpty,
+              !pass.isEmpty else {
                 let alert = UIAlertController(title: "registration Failed", message: "empty username or pass", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default))
                 present(alert, animated: true)
+            return
             }
-            usersDict[uname] = pass
-        }else{
-            let alert = UIAlertController(title: "registration Failed", message: "bad username or pass", preferredStyle: .alert)
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+            
+        let newUser = User(context: context)
+        newUser.username = uname
+        newUser.password = pass
+        
+        do {
+            try context.save()
+            
+            let alert = UIAlertController(title: "Registration Sucess", message: "account created", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK:", style: .default))
+            present(alert, animated: true)
+            
+        }catch{
+            let alert = UIAlertController(title: "registration failed", message: "coudnt save user", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default))
             present(alert, animated: true)
         }
+        
     }
     
     /*

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class SignInViewController: UIViewController {
     
@@ -19,25 +20,49 @@ class SignInViewController: UIViewController {
     
     
     @IBAction func signInPressed(_ sender: Any) {
-        if
-            let uname = txtUserName.text,
-            let pss = txtPass.text{
-            if usersDict[uname] == pss { performSegue(withIdentifier: "gotoShazam", sender: self)
-            }else{
+        
+        guard  let uname = txtUserName.text,
+               let pss = txtPass.text,
+               !uname.isEmpty,
+               !pss.isEmpty
+        else{return}
+        //            if usersDict[uname] == pss { performSegue(withIdentifier: "gotoShazam", sender: self)
+        //            }else{
+        //                let alert = UIAlertController(title: "login Failed", message: "wrong username or pass", preferredStyle: .alert)
+        //                alert.addAction(UIAlertAction(title: "OK", style: .default))
+        //                present(alert, animated: true)
+        //            }
+        //        }
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let request : NSFetchRequest<User> = User.fetchRequest()
+        request.predicate = NSPredicate(format: "username == %@ AND password == %@", uname, pss)
+        
+        do{
+            let results = try context.fetch(request)
+            if results.count > 0 {
+                performSegue(withIdentifier: "gotoShazam", sender: self)
+            }else {
                 let alert = UIAlertController(title: "login Failed", message: "wrong username or pass", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default))
                 present(alert, animated: true)
             }
+        }catch {
+            print( "fetch failed")
+            
         }
-        /*
-         // MARK: - Navigation
-         
-         // In a storyboard-based application, you will often want to do a little preparation before navigation
-         override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-         // Get the new view controller using segue.destination.
-         // Pass the selected object to the new view controller.
-         }
-         */
-        
     }
+    
+    
+    
+    /*
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destination.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
+    
 }
