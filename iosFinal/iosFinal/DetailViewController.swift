@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import MapKit
 
 class DetailViewController: UIViewController {
     var s:song?
@@ -17,6 +17,7 @@ class DetailViewController: UIViewController {
     
     @IBOutlet weak var complicated: UILabel!
     
+    @IBOutlet weak var LaMappa: MKMapView!
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -28,7 +29,18 @@ class DetailViewController: UIViewController {
             titleLabel.text = w.name;
             descTxtView.text = "Long: \(w.long)"
             complicated.text = "Lat:  \(w.lat)"
+            let coordinate = CLLocationCoordinate2D(latitude: w.lat, longitude: w.long)
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+            annotation.title = w.name
+            annotation.subtitle = w.artist
+            
+            LaMappa.removeAnnotations(LaMappa.annotations)
+            LaMappa.addAnnotation(annotation)
+            let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+        LaMappa.setRegion(region, animated: true)
         }
+
         switch s?.type {
         case .rap :
             image.image = (UIImage(named: "cheif"))

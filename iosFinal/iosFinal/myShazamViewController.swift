@@ -15,11 +15,14 @@ class myShazamViewController: UIViewController, SHSessionDelegate, CLLocationMan
     let locManager = CLLocationManager()
     let audioEngine = AVAudioEngine()
     let session = SHSession()
-    let signatureGenerator = SHSignatureGenerator()
+    var signatureGenerator = SHSignatureGenerator()
     var currLat : Double?
     var currLong : Double?
+    var tapInstalled = false
+    var listening = false
     
     
+    @IBOutlet weak var button: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,41 +31,62 @@ class myShazamViewController: UIViewController, SHSessionDelegate, CLLocationMan
         locManager.delegate = self
         locManager.requestWhenInUseAuthorization()
         locManager.startUpdatingLocation()
-
+        
     }
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else{return}
         currLat = location.coordinate.latitude
         currLong = location.coordinate.longitude
     }
+    
     @IBAction func doSomething(_ sender: Any) {
+        
+        if (listening){return}
+        listening = true
+        button.isEnabled = false;
+        
+        
         startListening()
         print("listening for 10 sec")
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 10){
-            
-            self.audioEngine.stop()
-            self.audioEngine.inputNode.removeTap(onBus: 0)
-            
-            let signature = self.signatureGenerator.signature()
-            self.session.match(signature)
-            print("finished listening matching song")
-            var songName = "song \(songID)";
-            var artistName = "artist \(songID)";
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            let dateString = dateFormatter.string(from: Date())
-            
-            songID+1;
-            mySongs.append(song(name: songName, type: .rock, artist: artistName, long: self.currLong ?? 0.0, lat: self.currLat ?? 0.0, date: dateString ))
-            
-//            init(name: String, type: Type, artist: String, long: String, lat: String, date: String) {
+            self.stopListeningAndMAtch()
         }
     }
     
-//    let mySongs: [song] = [
-//
-//        song(name: "Hot N Cold", type: .pop, artist: "Katy Perry", album: "One of the Boys"),
+    
+    
+    func stopListeningAndMAtch(){
+        self.audioEngine.stop()
+        
+        if self.tapInstalled{
+            self.audioEngine.inputNode.removeTap(onBus: 0)
+            self.tapInstalled = false;
+        }
+        let signature = self.signatureGenerator.signature()
+        self.session.match(signature)
+        
+        self.audioEngine.reset()
+        listening = false;
+        print("finished listening matching song")
+        
+        
+        var songName = "song \(songID)";
+        var artistName = "artist \(songID)";
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let dateString = dateFormatter.string(from: Date())
+        
+        songID+=1;
+        mySongs.append(song(name: songName, type: .rock, artist: artistName, long: self.currLong ?? 0.0, lat: self.currLat ?? 0.0, date: dateString ))
+        
+        //            init(name: String, type: Type, artist: String, long: String, lat: String, date: String) {
+    }
+    
+    
+    //    let mySongs: [song] = [
+    //
+    //        song(name: "Hot N Cold", type: .pop, artist: "Katy Perry", album: "One of the Boys"),
     func startListening(){
         do{
             let audiSession = AVAudioSession.sharedInstance()
@@ -71,35 +95,57 @@ class myShazamViewController: UIViewController, SHSessionDelegate, CLLocationMan
             
             let inputNode = audioEngine.inputNode
             let format = inputNode.inputFormat(forBus: 0)
-        
-        inputNode.installTap(onBus: 0, bufferSize: 1024, format: format){ buffer, audioTime in
-            do{
-                try self.signatureGenerator.append(buffer, at: audioTime)
-            }catch{
-                print("failed to append to audioBuffer\(error)")
+            if tapInstalled{
+                inputNode.removeTap(onBus: 0)
+                tapInstalled = false;
             }
-        }
+            signatureGenerator = SHSignatureGenerator()
+            
+            inputNode.installTap(onBus: 0, bufferSize: 1024, format: format){ buffer, audioTime in
+                do{
+                    try self.signatureGenerator.append(buffer, at: audioTime)
+                }catch{
+                    print("failed to append to audioBuffer\(error)")
+                }
+            }
+            tapInstalled = true;
+            
             
             audioEngine.prepare()
             try audioEngine.start()
+            listening = true
             print("listening")
         }catch {
             print( "audio engine coudnt start \(error)")
+            listening = false
         }
     }
+    
     func session(_ session: SHSession, didNotFindMatchFor signature: SHSignature, error: Error?){
         if let error = error{
             print ("No match / error \(error)")
         }else {
             print ("no match found.")
         }
-            /*
-             // MARK: - Navigation
-             // In a storyboard-based application, you will often want to do a little preparation before navigation
-             override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-             // Get the new view controller using segue.destination.
-             // Pass the selected object to the new view controller.
-             }
-             */
+        audioEngine.stop()
+        
+        if tapInstalled{
+            audioEngine.inputNode.removeTap(onBus: 0)
+            tapInstalled = false
+        }
+        audioEngine.reset()
+        signatureGenerator = SHSignatureGenerator()
+        
+        listening = false
+        button.isEnabled = true;
+        /*
+         // MARK: - Navigation
+         // In a storyboard-based application, you will often want to do a little preparation before navigation
+         override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+         // Get the new view controller using segue.destination.
+         // Pass the selected object to the new view controller.
+         }
+         */
     }
+    
 }

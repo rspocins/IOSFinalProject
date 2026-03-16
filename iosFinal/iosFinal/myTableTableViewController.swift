@@ -59,7 +59,7 @@ class myTableTableViewController: UITableViewController {
     override func tableView(_ tableVIew: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath){
         let s1: song = mySongs[indexPath.row]
         let title = s1.name
-        let message = s1.artist
+        let message = "you listened on \(s1.date)"
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         let okayAction = UIAlertAction(title: "okay", style: .default, handler: nil)
         alertController.addAction(okayAction)

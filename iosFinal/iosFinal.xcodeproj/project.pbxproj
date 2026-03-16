@@ -164,6 +164,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosFinal/Info.plist;
 				INFOPLIST_KEY_NSAppleMusicUsageDescription = "";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Need location to save coordinates";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "this app needs microphone access for shazam functionailty";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -199,6 +200,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosFinal/Info.plist;
 				INFOPLIST_KEY_NSAppleMusicUsageDescription = "";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Need location to save coordinates";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "this app needs microphone access for shazam functionailty";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
